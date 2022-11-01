@@ -11,9 +11,9 @@
 }
 
 .message__userCard {
-	background-color: blue;
+	background-color: blue !important;
 }
 
 .message__userGuest {
-	background-color: brown;
+	background-color: brown !important;
 }

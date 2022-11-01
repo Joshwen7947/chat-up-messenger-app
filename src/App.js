@@ -3,7 +3,10 @@ import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
 import Message from './Message';
 import './App.css';
 import db from './firebase';
-
+import firebase from 'firebase/compat/app';
+import 'firebase/auth';
+import 'firebase/database';
+import 'firebase/compat/firestore';
 // useState -> Variable in react
 // useEffect -> Code executed on a condition in react
 function App() {
@@ -23,7 +26,11 @@ function App() {
 	const sendMessage = (event) => {
 		// Logic to send the message
 		event.preventDefault();
-		setMessages([...messages, { username: username, text: input }]);
+		db.collection('messages').add({
+			message: input,
+			username: username,
+			timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+		});
 		setInput('');
 	};
 

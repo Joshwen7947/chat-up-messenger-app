@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, FormControl, InputLabel, Input } from '@material-ui/core';
+import { FormControl, Input } from '@material-ui/core';
 import Message from './Message';
 import './App.css';
 import db from './firebase';
@@ -7,6 +7,11 @@ import firebase from 'firebase/compat/app';
 import 'firebase/auth';
 import 'firebase/database';
 import 'firebase/compat/firestore';
+import FlipMove from 'react-flip-move';
+import IconButton from '@mui/material/IconButton';
+
+import SendIcon from '@mui/icons-material/Send';
+
 // useState -> Variable in react
 // useEffect -> Code executed on a condition in react
 function App() {
@@ -15,9 +20,13 @@ function App() {
 	const [username, setUsername] = useState('');
 
 	useEffect(() => {
-		db.collection('messages').onSnapshot((snapshot) => {
-			setMessages(snapshot.docs.map((doc) => doc.data()));
-		});
+		db.collection('messages')
+			.orderBy('timestamp', 'desc')
+			.onSnapshot((snapshot) => {
+				setMessages(
+					snapshot.docs.map((doc) => ({ id: doc.id, message: doc.data() }))
+				);
+			});
 	}, []);
 	useEffect(() => {
 		setUsername(prompt('Enter your name'));
@@ -36,30 +45,36 @@ function App() {
 
 	return (
 		<div className="App">
-			<h1>Chat Up App</h1>
+			<img src={'/logo.png'} alt="Chat Up Logo" height={'150px'} />
+			<h1>Chat Up </h1>
 			<h2>Welcome {username}</h2>
-			<form>
+			<form className="app__form">
 				{/* form control is from material ui */}
-				<FormControl>
-					<InputLabel>Enter a message...</InputLabel>
+				<FormControl className="app__formControl">
 					<Input
+						className="app__input"
+						placeholder="Enter a message"
 						value={input}
 						onChange={(event) => setInput(event.target.value)}
 					/>
-					<Button
+
+					<IconButton
+						className="app__iconButton"
 						disabled={!input}
 						variant="outlined"
 						color="primary"
 						type="submit"
 						onClick={sendMessage}
 					>
-						Send Message
-					</Button>
+						<SendIcon />
+					</IconButton>
 				</FormControl>
 			</form>
-			{messages.map((message) => (
-				<Message username={username} message={message} />
-			))}
+			<FlipMove>
+				{messages.map(({ id, message }) => (
+					<Message key={id} username={username} message={message} />
+				))}
+			</FlipMove>
 		</div>
 	);
 }

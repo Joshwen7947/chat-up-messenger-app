@@ -11,9 +11,9 @@
 }
 
 .message__userCard {
-	background-color: blue !important;
+	background-color: rgb(86, 86, 242) !important;
 }
 
 .message__userGuest {
-	background-color: brown !important;
+	background-color: rgb(156, 176, 186) !important;
 }
